@@ -1,0 +1,22 @@
+{
+  "id": "modern",
+  "name": "现代图文口播",
+  "description": "浅色干净底、大标题 + 关键词高亮 + 底部字幕条，适合知识讲解、产品介绍、观点输出。",
+  "background": {"color": "#F4F5F7", "image": null},
+  "portrait": {
+    "resolution": [1080, 1920],
+    "title":    {"font": "PingFang SC", "font_size": 76, "bold": true, "color": "#1A1D24", "pos_y": 0.30},
+    "keyword":  {"color": "#EB6C36"},
+    "body":     {"font": "PingFang SC", "font_size": 46, "color": "#3A3F4B", "pos_y": 0.55},
+    "subtitle": {"font": "PingFang SC", "font_size": 42, "color": "#FFFFFF", "bg": "#1A1D24", "pos_y": 0.84},
+    "image_pos": {"pos_x": 0.5, "pos_y": 0.62, "scale": 0.7}
+  },
+  "landscape": {
+    "resolution": [1920, 1080],
+    "title":    {"font": "PingFang SC", "font_size": 72, "bold": true, "color": "#1A1D24", "pos_y": 0.32},
+    "keyword":  {"color": "#EB6C36"},
+    "body":     {"font": "PingFang SC", "font_size": 40, "color": "#3A3F4B", "pos_y": 0.55},
+    "subtitle": {"font": "PingFang SC", "font_size": 38, "color": "#FFFFFF", "bg": "#1A1D24", "pos_y": 0.86},
+    "image_pos": {"pos_x": 0.72, "pos_y": 0.5, "scale": 0.6}
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "tech",
+  "name": "深色科技控制台",
+  "description": "深色底、青色发光描边、适合数据/技术解读、AI 主题、硬核科普。",
+  "background": {"color": "#0B0E14", "image": null},
+  "portrait": {
+    "resolution": [1080, 1920],
+    "title":    {"font": "PingFang SC", "font_size": 72, "bold": true, "color": "#7FE3FF", "pos_y": 0.30},
+    "keyword":  {"color": "#39FFD0"},
+    "body":     {"font": "PingFang SC", "font_size": 44, "color": "#C8D2E0", "pos_y": 0.55},
+    "subtitle": {"font": "PingFang SC", "font_size": 40, "color": "#0B0E14", "bg": "#39FFD0", "pos_y": 0.84},
+    "image_pos": {"pos_x": 0.5, "pos_y": 0.62, "scale": 0.7}
+  },
+  "landscape": {
+    "resolution": [1920, 1080],
+    "title":    {"font": "PingFang SC", "font_size": 68, "bold": true, "color": "#7FE3FF", "pos_y": 0.32},
+    "keyword":  {"color": "#39FFD0"},
+    "body":     {"font": "PingFang SC", "font_size": 38, "color": "#C8D2E0", "pos_y": 0.55},
+    "subtitle": {"font": "PingFang SC", "font_size": 36, "color": "#0B0E14", "bg": "#39FFD0", "pos_y": 0.86},
+    "image_pos": {"pos_x": 0.72, "pos_y": 0.5, "scale": 0.6}
+  }
+}

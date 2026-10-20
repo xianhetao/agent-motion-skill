@@ -1,0 +1,22 @@
+{
+  "id": "magazine",
+  "name": "杂志分屏",
+  "description": "左文右图 / 分栏排版，适合带配图的案例、测评、清单、对比类口播。",
+  "background": {"color": "#FFFFFF", "image": null},
+  "portrait": {
+    "resolution": [1080, 1920],
+    "title":    {"font": "PingFang SC", "font_size": 70, "bold": true, "color": "#222222", "pos_y": 0.16},
+    "keyword":  {"color": "#EB6C36"},
+    "body":     {"font": "PingFang SC", "font_size": 42, "color": "#444444", "pos_y": 0.40, "align": "left", "pos_x": 0.18},
+    "subtitle": {"font": "PingFang SC", "font_size": 40, "color": "#FFFFFF", "bg": "#EB6C36", "pos_y": 0.90},
+    "image_pos": {"pos_x": 0.5, "pos_y": 0.70, "scale": 0.85}
+  },
+  "landscape": {
+    "resolution": [1920, 1080],
+    "title":    {"font": "PingFang SC", "font_size": 64, "bold": true, "color": "#222222", "pos_y": 0.22, "align": "left", "pos_x": 0.08},
+    "keyword":  {"color": "#EB6C36"},
+    "body":     {"font": "PingFang SC", "font_size": 36, "color": "#444444", "pos_y": 0.52, "align": "left", "pos_x": 0.08},
+    "subtitle": {"font": "PingFang SC", "font_size": 34, "color": "#FFFFFF", "bg": "#EB6C36", "pos_y": 0.90},
+    "image_pos": {"pos_x": 0.72, "pos_y": 0.5, "scale": 0.8}
+  }
+}
