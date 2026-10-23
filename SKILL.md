@@ -155,6 +155,15 @@ python3 scripts/font_compare.py --text "门槛几乎 降到零" \
 规范见 `references/design_principles.md` §5：**中文只用 Noto Sans SC 两档（正文 500、强调 900）**，
 不要用 600/700 当强调，也不要用横细竖粗的展示字体（得意黑已被否决）。
 
+## 风格参考与样张（加选项，不加禁令）
+
+来源：huashu-design 3.0（路线 C 引擎 huashu-motion 的设计方法论，2026-10-23）。核心三条，开工前必读 `references/style_reference.md`：
+
+- **加选项，不加禁令**：风格多样性不要用「别用 X」表达（会逼 agent 躲到最安全最无聊的长相）；改成给 2–3 个候选方向 + 样张。硬规则（design_principles）是对错线，必须守，不在此列。
+- **先出候选方向，再定稿**：开工前摆 2–3 个视觉方向（配色 + 版式 + 参考片），够好 / 彼此差异明显 / 不撞近期项目三选，确认再渲。
+- **参考板（ref_board）：同媒介、先截图**：参考片必须是同形态口播/短视频，抽关键帧拼板先看再定（`scripts/ref_board.py`）；字体样张用 `scripts/font_compare.py`。
+- **外观账本 + 成片体检**：交付记一笔外观、下个片主动错开；成片只查事实（裂帧/字太小/对比度/撞外观/换皮），见 review_loop.md。
+
 ## 交付后清理
 
 定稿后清理中间产物（各版成片、逐帧目录、历史测试段、QC 抽帧），只留真值 + 成品段构件 + 成片。
@@ -177,6 +186,7 @@ python3 scripts/font_compare.py --text "门槛几乎 降到零" \
 - `scripts/configure.py` — 路线 C 核心：SRT→om-cues 注入 + 卡片变量配置（自动去 muted）
 - `scripts/verify_segments.py` — 路线 D：concat 前校验各段帧数/音轨，并给出修复命令
 - `scripts/font_compare.py` — 字体对比样张生成（选字体前先出图目测）
+- `scripts/ref_board.py` — 参考片关键帧板（同媒介参考，先截图再看；对标 huashu-design 3.0 的 ref_board）
 - `scripts/srt_to_ass.py` — 路线 B：SRT→tech 风格 ASS
 - `scripts/build_jianying.py` — 路线 A：剪映完整工程生成
 - `scripts/srt_to_shotlist.py` — 路线 A：SRT→shot_list.json
@@ -184,6 +194,7 @@ python3 scripts/font_compare.py --text "门槛几乎 降到零" \
 - `references/native_engine.md` — 路线 D：原生工程结构、渲染管线、7 个必踩坑位
 - `references/review_loop.md` — 验收迭代：口语反馈翻译表、定位技巧、交付说明写法
 - `references/delivery_cleanup.md` — 交付后清理：分类、白名单、`trash` 分批执行规则
+- `references/style_reference.md` — **风格参考与样张方法论（huashu-design 3.0 沉淀：加选项不加禁令 / 参考板 / 外观账本）**
 - `references/workflow_director.md` — 路线 C 端到端流程 + cue/坑位详解
 - `references/planning_guide.md` — 理解文案·分镜规划方法
 - `references/shot_list_spec.md` — 路线 A 的 shot_list 格式规范
