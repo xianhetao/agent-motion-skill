@@ -53,7 +53,7 @@ P0 输入理解 → P1 关键帧设计 → P2 段落决策(抽象→人讲/具�
 
 稳定、无浏览器依赖、已验证（洁丽雅口播样本 `work/test-01/hybrid/`）。按 P2/P3 定的模式选脚本：
 
-- **人在讲（A 模式）/ 混合 L1·L3**：`scripts/render_talk.py` —— 原片全屏 + PIL 渲染的透明关键字层（按口播时序 20px expoOut 上浮 + 硬间隙）+ ffmpeg overlay。解决 ffmpeg drawtext 读 Noto OTC 缺字（筛/给 变方框）问题。
+- **人在讲（A 模式）/ 混合 L1·L3**：`scripts/render_talk.py` —— 原片（可全屏、也可缩放进九宫格某格 + 背景补位）+ PIL 灵活关键字层（按口播时序、按人在九宫格的位置定落位：人中对下 / 人下对上 / 人左对右，20px expoOut 上浮 + 硬间隙）+ ffmpeg overlay。解决 ffmpeg drawtext 读 Noto OTC 缺字（筛/给 变方框）问题。
 - **纯动效（B 模式）**：`scripts/render_anim.py` —— PIL 逐帧画满屏关键帧（标题/数据/树图），动效严格遵守 `design_principles.md` §3（expoOut/overshoot/expoIn/linear、tier 分级、20px 位移、段尾硬切），可 mux 原片音轨。
 - **关键帧设计（P1）**：`scripts/gen_keyframes.py` —— PIL 直绘静态关键帧 PNG（4 章风格 + 大标题/数据卡/树图），先出图定方案再渲染。
 
