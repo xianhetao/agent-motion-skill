@@ -1,6 +1,6 @@
 ---
 name: agent-motion
-description: 把口播视频/讲稿做成「理解文案」的导演式短视频。当用户要做口播短视频、知识讲解、企业宣传口播，或提到「口播包装」「talking-head」「花字」「数字卡」「章节卡」「名牌」「导演式包装」「口播成片」「按口播出元素」「元素动画」时使用。三条路线：C 用 huashu-motion talking-head 模板（默认）；D 用原生 Three.js 逐帧工程（需要逐元素按口播调度、完全自定义视觉时用）；另有剪映草稿与 FFmpeg 直烧兜底。不论走哪条，都必须遵守 references/design_principles.md 的动效与排版规范。
+description: 把口播视频/讲稿做成「理解文案」的导演式短视频。当用户要做口播短视频、知识讲解、企业宣传口播，或提到「口播包装」「talking-head」「花字」「数字卡」「章节卡」「名牌」「导演式包装」「口播成片」「按口播出元素」「元素动画」时使用。主路线 H 用 Python PIL+ffmpeg 混排直渲（满屏文字动画/人全屏+关键字/人+动效混合，默认）；C 用 huashu-motion talking-head 模板（标准化卡片备选）；D 用原生 Three.js 逐帧工程（极致逐元素/3D）；另有 FFmpeg 直烧兜底，剪映草稿已退役。不论走哪条，都必须遵守 references/design_principles.md 的动效与排版规范。
 ---
 
 # Agent Motion · 口播导演包装
@@ -9,7 +9,7 @@ description: 把口播视频/讲稿做成「理解文案」的导演式短视频
 
 把「口播视频 + 字幕/讲稿」做成**真正理解文案**的短视频包装：数据 count-up 卡、金句花字、章节卡、名牌、角标，全部**卡在说到的词上**，而不是机械铺字幕。
 
-核心路线（路线 C）依赖 [`huashu-motion`](../../huashu-motion/SKILL.md) 技能的 `om` CLI 与 talking-head 模板做导演式合成；另外保留两条兜底路线——剪映草稿（需二次精修）和 FFmpeg 直烧字幕（只要成片、不要编辑）。
+**主路线是 H（PIL+ffmpeg 混排直渲）**：用 Python PIL 逐帧画满屏文字动画 / 人全屏+关键字 / 人+动效混合，再 ffmpeg 合成编码，稳、无浏览器依赖。huashu-motion（路线 C）作为标准化卡片模板备选；Three.js（路线 D）留作极致逐元素/3D；剪映草稿（路线 A）已退役。
 
 **先理解、再包装**：开工第一件事是看片 + 读字幕，写出分镜细案（强化段 / 金句 / 数据块 / 章节），再决定每张卡片卡在哪句话上。否则容易回到「机械铺字幕」——这是用户明确否决过的方向。
 
@@ -28,20 +28,20 @@ P0 输入理解 → P1 关键帧设计 → P2 段落决策(抽象→人讲/具�
 ③ 人+动效同框默认**画中画**（无绿幕），关键帧未满屏时人窗放空白处；④ 全局规范（`design_principles.md`/`style_reference.md`）定调，
 段落级微调写独立 scene 文件、不污染通用规则。样例节奏表（洁丽雅 142s）见 pipeline.md §9。
 
-## 三条路线选型
+## 路线选型
 
 | 路线 | 何时用 | 引擎 | 交付 |
 |---|---|---|---|
-| **C · 导演式（默认）** | 要「理解文案」的包装、数据/金句可视化、口播成片 | huashu-motion `om` + talking-head 模板 | 自带音轨的 MP4 |
-| **D · 原生工程** | 模板不够：要逐元素按口播调度、自绘图表/白板/卡片系统、完全控制每帧构图 | 自建 Three.js 工程 + 逐帧截图 + ffmpeg | 自带音轨的 MP4 |
-| **B · FFmpeg 直烧** | 不要二次编辑、只要成片；剪映打不开草稿时 | `srt_to_ass.py` + ffmpeg | 烧录字幕/卡片的 MP4 |
-| **A · 剪映草稿** | 需要在剪映里精修/加特效 | `build_jianying.py` | 剪映工程文件夹 |
+| **H · 混排直渲（主路线）** | 满屏演绎 + 人全屏 + 混排：文字动画段、人在讲+关键字、人+动效混合 | Python PIL 逐帧 + ffmpeg 合成/编码（`scripts/render_anim.py` / `render_talk.py`） | 自带音轨 MP4 |
+| **C · 导演式（备选）** | 需要 huashu-motion 标准化模板/卡片（名牌/数字卡/花字/章节）时 | huashu-motion `om` + talking-head 模板（web/JS 引擎） | 自带音轨 MP4 |
+| **D · Three.js 原生（保留）** | 极致逐元素 / 3D 控制，模板与 PIL 都做不出时 | 自建 Three.js 工程 + 逐帧 + ffmpeg | 自带音轨 MP4 |
+| **B · FFmpeg 直烧（兜底）** | 只要轻量字幕烧录、不要二次编辑 | `srt_to_ass.py` + ffmpeg | 烧录字幕 MP4 |
+| **A · 剪映草稿（退役）** | 新版剪映专业版私有格式不兼容，已停用 | — | — |
 
-> 路线 A/B 在新版剪映专业版上有兼容性问题（旧 `draft_content.json` 格式不被识别、FFmpeg 路线只适合轻量字幕）。
-> **默认走路线 C**；当用户要求「每个元素跟着口播一个一个出」「这一段要重做视觉」「按我说的改动画」这类
-> **逐元素控制**时，切到路线 D（参考实现 `work/test-01/film/`，v4→v18 迭代 14 版）。
+> **默认走路线 H**（稳、无浏览器依赖、已验证洁丽雅口播样本）；C 是标准化卡片模板备选（需 mac Chrome sandbox 补丁）；
+> D 是重武器，仅在需要逐元素/3D 时使用（参考实现 `work/test-01/film/`，v4→v18 迭代 14 版）；B 仅轻量字幕；A 退役。
 
-## 通用前置（两条路线都要）
+## 通用前置（所有路线都要）
 
 开工第一件事是看片 + 读字幕，写出分镜细案（强化段 / 金句 / 数据块 / 章节），再决定每张卡片卡在哪句话上。
 否则容易回到「机械铺字幕」——这是用户明确否决过的方向。
@@ -49,7 +49,28 @@ P0 输入理解 → P1 关键帧设计 → P2 段落决策(抽象→人讲/具�
 动效与排版**不是自由发挥**：`references/design_principles.md` 是用户反复验收后拍板的硬规则
 （生命周期、入画落视觉中心、组间距、脉冲缩放必须归位、硬切原则、图片规范等），开工前必读。
 
-## 路线 C：导演式包装（核心）
+## 主路线 H：混排直渲（PIL + ffmpeg，默认）
+
+稳定、无浏览器依赖、已验证（洁丽雅口播样本 `work/test-01/hybrid/`）。按 P2/P3 定的模式选脚本：
+
+- **人在讲（A 模式）/ 混合 L1·L3**：`scripts/render_talk.py` —— 原片全屏 + PIL 渲染的透明关键字层（按口播时序 20px expoOut 上浮 + 硬间隙）+ ffmpeg overlay。解决 ffmpeg drawtext 读 Noto OTC 缺字（筛/给 变方框）问题。
+- **纯动效（B 模式）**：`scripts/render_anim.py` —— PIL 逐帧画满屏关键帧（标题/数据/树图），动效严格遵守 `design_principles.md` §3（expoOut/overshoot/expoIn/linear、tier 分级、20px 位移、段尾硬切），可 mux 原片音轨。
+- **关键帧设计（P1）**：`scripts/gen_keyframes.py` —— PIL 直绘静态关键帧 PNG（4 章风格 + 大标题/数据卡/树图），先出图定方案再渲染。
+
+```bash
+# 人在讲段：关键字按口播时序，t0/t1 单位秒，相邻留 0.10s 硬间隙
+python3 scripts/render_talk.py --source 口播.mp4 --ss 9.8 --t 9.7 --out u03.mp4 \
+  --kws '[{"text":"有人替你筛过一遍","t0":0,"t1":4.4},{"text":"供给端天然稀缺","t0":4.5,"t1":6.9},{"text":"所以它可信","t0":7.0,"t1":9.7}]'
+
+# 纯动效段：scene JSON 描述元素入场/出场（元素类型 line/title/kwblock/number/block/divider）
+python3 scripts/render_anim.py --scene scene_u04.json --out u04.mp4 --audio 口播.mp4 --ss 19.7 --t 7.366
+```
+
+- 字体：mac 系统 `NotoSansCJKsc-{Black,Bold,Medium}.otf`（Noto 900/700/500）；换平台需改脚本顶部字体路径。
+- 逐段渲染后按 P5 锁定方案 concat 拼接（用 `verify_segments.py` 校验帧数/音轨）。
+- 元素类型可按需扩展（如 KF6 树状图需 node/tree 类型，在 `render_anim.py` 的 `draw_elem` 增加分支即可）。
+
+## 路线 C：导演式包装（备选）
 
 ### 流程
 
@@ -127,15 +148,9 @@ ffmpeg -y -i 口播.mp4 -vf "subtitles=/abs/path/tech.ass" \
 
 注意：ASS 必须用**绝对路径**（subtitles 滤镜不认 `~` 也不认后台任务的相对 cwd）；颜色是 `&HAABBGGRR`（BGR 顺序）；输入侧 `-ss` 在 HEVC 上有 seek 假象，验证用**输出侧** `-ss`。
 
-## 路线 A：剪映草稿（兜底，需精修时）
+## 路线 A：剪映草稿（已退役）
 
-```bash
-python3 scripts/srt_to_shotlist.py 字幕.srt --video 口播.mp4 --out shot_list.json
-python3 scripts/build_jianying.py --list shot_list.json --template assets/template-modern.json
-# 默认直接写入本机剪映草稿目录（~/Movies/JianyingPro/.../com.lveditor.draft），重启剪映可见
-```
-
-> 新版剪映专业版草稿主文件是私有格式，旧 `pyJianYingDraft` 生成的 `draft_content.json` 可能显示 0KB/00:00。此路线仅作兜底，优先路线 C。
+> 新版剪映专业版草稿主文件是私有格式，旧 `pyJianYingDraft` 生成的 `draft_content.json` 不兼容（显示 0KB/00:00）。**此路线已退役，不要再走**；需要剪映精修改用路线 C 或 H。`scripts/srt_to_shotlist.py`、`scripts/build_jianying.py` 保留但标记废弃。
 
 ## 路线 D：原生 Three.js 工程（逐元素控制）
 
@@ -203,6 +218,9 @@ python3 scripts/font_compare.py --text "门槛几乎 降到零" \
 - `scripts/font_compare.py` — 字体对比样张生成（选字体前先出图目测）
 - `scripts/ref_board.py` — 参考片关键帧板（同媒介参考，先截图再看；对标 huashu-design 3.0 的 ref_board）
 - `scripts/wcag_check.py` — 文字/背景对比度核算（WCAG 2.1 AA；改配色前先核每一处配对，避免亮橙压白底这类不达标）
+- `scripts/render_talk.py` — **路线 H**：人在讲段渲染器（原片全屏 + PIL 关键字层 + ffmpeg overlay）
+- `scripts/render_anim.py` — **路线 H**：纯动效段渲染器（PIL 逐帧满屏关键帧 + ffmpeg 编码 + mux 音轨）
+- `scripts/gen_keyframes.py` — **路线 H / P1**：静态关键帧 PNG 生成（4 章风格 + 大标题/数据卡/树图）
 - `scripts/srt_to_ass.py` — 路线 B：SRT→tech 风格 ASS
 - `scripts/build_jianying.py` — 路线 A：剪映完整工程生成
 - `scripts/srt_to_shotlist.py` — 路线 A：SRT→shot_list.json

@@ -157,12 +157,12 @@ P0 输入与理解 → P1 关键帧设计 → P2 段落决策 → P3 节奏规�
 ### 7.1 渲染脚本（按模式选）
 | 模式 | 脚本 | 说明 |
 |---|---|---|
-| 人讲（A）/ 混合（C-L1/L3） | `hybrid/render_talk.py` | PIL 关键字层 + ffmpeg overlay 原片；20px expoOut 入场 + 硬间隙 |
-| 纯动效（B） | `hybrid/render_anim.py` | PIL 逐帧 + ffmpeg 编码；tier 分级时长、段尾硬切 |
-| 路线 C 导演式 | `huashu-motion` `om` | 模板化卡片/花字/章节（常规口播包装） |
-| 路线 D 原生 | Three.js 工程 | 完全逐元素控制（重活） |
+| 人在讲（A 模式）/ 混合 L1·L3 | `scripts/render_talk.py`（路线 H） | PIL 关键字层 + ffmpeg overlay 原片；20px expoOut 入场 + 硬间隙 |
+| 纯动效（B 模式） | `scripts/render_anim.py`（路线 H） | PIL 逐帧 + ffmpeg 编码；tier 分级时长、段尾硬切 |
+| 路线 C 导演式 | `huashu-motion` `om` | 标准化卡片/花字/章节模板（备选） |
+| 路线 D 原生 | Three.js 工程 | 极致逐元素/3D 控制（重活，保留） |
 
-> `hybrid/` 脚本当前在 `work/test-01/hybrid/`，稳定后可提升为 skill 脚本。
+> `render_talk.py` / `render_anim.py` / `gen_keyframes.py` 已提升为技能脚本（`scripts/`），可直接复用。
 
 ### 7.2 全局规范 vs 段落微调（用户要求）
 - **全局规范**（文字/图片/动效）写在 `design_principles.md` + `style_reference.md` + `wcag_check.py`，**所有段默认遵守，不在渲染代码里另写一套**。
