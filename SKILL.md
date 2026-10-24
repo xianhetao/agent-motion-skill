@@ -13,6 +13,21 @@ description: 把口播视频/讲稿做成「理解文案」的导演式短视频
 
 **先理解、再包装**：开工第一件事是看片 + 读字幕，写出分镜细案（强化段 / 金句 / 数据块 / 章节），再决定每张卡片卡在哪句话上。否则容易回到「机械铺字幕」——这是用户明确否决过的方向。
 
+## 全流程方案（先设计对齐，再渲染）
+
+开工**不要直接进渲染**。完整决策流见 `references/pipeline.md`：
+
+```
+P0 输入理解 → P1 关键帧设计 → P2 段落决策(抽象→人讲/具象→动效)
+ → P3 节奏规划(按片长定呼吸) → P4 技术决策(画中画/抠像+混排布局)
+ → P5 渲染前对齐(用户+agent 锁定方案,含2样本预演) → P6 渲染+QC
+```
+
+**铁律**：P0–P5 只做设计与对齐、不写渲染代码；P5 用户拍板后才进 P6。
+关键决策：① 特别抽象的段落**让人讲、不出画面演绎**；② 纯口播连续 ≤30s、纯动效 ≤25s 必切换（疲劳阈值）；
+③ 人+动效同框默认**画中画**（无绿幕），关键帧未满屏时人窗放空白处；④ 全局规范（`design_principles.md`/`style_reference.md`）定调，
+段落级微调写独立 scene 文件、不污染通用规则。样例节奏表（洁丽雅 142s）见 pipeline.md §9。
+
 ## 三条路线选型
 
 | 路线 | 何时用 | 引擎 | 交付 |
@@ -196,6 +211,7 @@ python3 scripts/font_compare.py --text "门槛几乎 降到零" \
 - `references/review_loop.md` — 验收迭代：口语反馈翻译表、定位技巧、交付说明写法
 - `references/delivery_cleanup.md` — 交付后清理：分类、白名单、`trash` 分批执行规则
 - `references/style_reference.md` — **风格参考与样张方法论（huashu-design 3.0 沉淀：加选项不加禁令 / 参考板 / 外观账本）**
+- `references/pipeline.md` — **全流程方案：P0–P6 决策流、段落决策、节奏规划、画中画/抠像、渲染前对齐清单、样例节奏表**
 - `references/workflow_director.md` — 路线 C 端到端流程 + cue/坑位详解
 - `references/planning_guide.md` — 理解文案·分镜规划方法
 - `references/shot_list_spec.md` — 路线 A 的 shot_list 格式规范
