@@ -53,29 +53,47 @@ P0 输入理解 → P1 关键帧设计 → P2 段落决策(抽象→人讲/具�
 
 稳定、无浏览器依赖、已验证（洁丽雅口播样本 `work/test-01/hybrid/`）。按 P2/P3 定的模式选脚本：
 
-- **人在讲（A 模式）/ 混合 L1·L3**：`scripts/render_talk.py` —— 原片（可全屏、也可缩放进九宫格某格 + 背景补位）+ PIL 灵活关键字层（按口播时序、按人在九宫格的位置定落位：人中对下 / 人下对上 / 人左对右，20px expoOut 上浮 + 硬间隙）+ ffmpeg overlay。解决 ffmpeg drawtext 读 Noto OTC 缺字（筛/给 变方框）问题。**大特写占满全帧的素材必须走画中画（`--pip`），窗口比例须小于源比例否则纵向切脸**；另一栏用「编号+论点」列表（`--list`）撑满并与窗等高对齐。详见 `design_principles.md` §2.1.1/§2.1.2。
+- **人在讲（无定稿 KF 覆盖的抽象段）**：`scripts/render_kf.py` —— 两套版式，视觉语言沿用 `gen_keyframes.py`（纸底/墨/深红/白卡/整块色条）。**A 上下结构**（人像块满宽占上半屏 + 下半屏两拍文字）、**B 角落画中画**（人像块右上 440 + 标题/关键句/白卡列表/底部色条）。人像块形状 `--shape square|circle` 由该段版式定，裁切以「头—颈—肩完整」为准，用 `--cx/--cy/--zoom` 逐段对；动效按 §3（20px expoOut、tier 分级、同镜换拍 0.10s 硬间隙），`--preview` 先出静态确认图。
 - **纯动效（B 模式）**：`scripts/render_anim.py` —— PIL 逐帧画满屏关键帧（标题/数据/树图），动效严格遵守 `design_principles.md` §3（expoOut/overshoot/expoIn/linear、tier 分级、20px 位移、段尾硬切），可 mux 原片音轨。
 - **关键帧设计（P1）**：`scripts/gen_keyframes.py` —— PIL 直绘静态关键帧 PNG（4 章风格 + 大标题/数据卡/树图），先出图定方案再渲染。
 
 ```bash
-# 人在讲段：关键字按口播时序，t0/t1 单位秒，相邻留 0.10s 硬间隙
-python3 scripts/render_talk.py --source 口播.mp4 --ss 9.8 --t 9.7 --out u03.mp4 \
-  --kws '[{"text":"有人替你筛过一遍","t0":0,"t1":4.4},{"text":"供给端天然稀缺","t0":4.5,"t1":6.9},{"text":"所以它可信","t0":7.0,"t1":9.7}]'
+# 人在讲 A 版式（上下结构，两拍）：先 --preview 出静态确认图给用户拍板构图，再渲视频
+python3 scripts/render_kf.py --source clean.mp4 --ss 27.366 --t 4.6 --layout A \
+  --shape square --cx 0.78 --cy 0.82 --zoom 0.62 --out u05.mp4 \
+  --content '{"blocks":[
+    {"kind":"label","text":"对甲方来说","t0":0,"beat":1},
+    {"kind":"label","text":"麻烦不再是","t0":0.30,"beat":1},
+    {"kind":"strike","text":"没人可用","t0":0.36,"beat":1},
+    {"kind":"label","text":"而是","t0":3.03,"beat":2},
+    {"kind":"bigred","text":"选谁","t0":3.09,"beat":2}]}'
+#   加 --preview --pt 3.2 --preview-out prev.png   ← 只出静态图，不渲染视频
 
-# 大特写素材：画中画 + 论点列表（先 --preview 出静态图给用户确认构图，再渲染）
+# 人在讲 B 版式（角落画中画 + 白卡列表 + 底部色条）
+python3 scripts/render_kf.py --source clean.mp4 --ss 32.0 --t 6.6 --layout B \
+  --shape square --cx 0.78 --cy 0.82 --zoom 0.62 --out u06.mp4 \
+  --content '{"title":["满市场的人都说","自己能做内容"],"title_size":72,
+    "sub":"能带货，能涨粉","sub_t0":2.366,
+    "cards":[{"label":"说自己能做","t0":0.5},
+             {"label":"说自己能带货","t0":2.366},
+             {"label":"说自己能涨粉","t0":2.866}],
+    "bottom":["你分不清","谁真谁假"],"bottom_t0":4.133}'
+
+# 原片无定稿 KF、但画面本就满（不需人像块）时，可退回 render_talk.py 的关键字层叠加
 python3 scripts/render_talk.py --source 口播.mp4 --ss 9.8 --t 9.7 --out u03.mp4 \
-  --pip square --pip-cell right --pip-ratio 0.34 --bg "#f2f1ec" \
-  --list '["有人替你\n筛过一遍","供给端\n天然稀缺","所以它\n可信"]' \
-  --kws '[{"idx":0,"t0":0,"t1":4.4},{"idx":1,"t0":4.5,"t1":6.9},{"idx":2,"t0":7.0,"t1":9.7}]'
-#   --preview --pt 2 --preview-out prev.png   ← 只出静态确认图，带九宫格 P/K 标注
+  --kws '[{"text":"有人替你筛过一遍","t0":0,"t1":4.4},{"text":"所以它可信","t0":4.5,"t1":9.7}]'
 
 # 纯动效段：scene JSON 描述元素入场/出场（元素类型 line/title/kwblock/number/block/divider）
 python3 scripts/render_anim.py --scene scene_u04.json --out u04.mp4 --audio 口播.mp4 --ss 19.7 --t 7.366
 ```
 
+- **素材自带烧录字幕**：先整条裁掉再进任何版式——`ffmpeg -i 原片.mp4 -vf "crop=W:H:0:0" -c:v libx264 -crf 18 -c:a copy clean.mp4`
+  （裁到字幕上沿以上）。**不要做 delogo/修补**：字幕通常压在脸部，修补会留糊块。裁完人像只剩头脸也必须接受，
+  这是素材问题不是版式问题；正常拍摄要求现场就别烧字幕。
 - 字体：mac 系统 `NotoSansCJKsc-{Black,Bold,Medium}.otf`（Noto 900/700/500）；换平台需改脚本顶部字体路径。
 - 逐段渲染后按 P5 锁定方案 concat 拼接（用 `verify_segments.py` 校验帧数/音轨）。
 - 元素类型可按需扩展（如 KF6 树状图需 node/tree 类型，在 `render_anim.py` 的 `draw_elem` 增加分支即可）。
+- `render_talk.py` 的「编号+论点列表」（`--list`）是**已弃用版式**，保留但不默认使用；人在讲默认走 `render_kf.py`。
 
 ## 路线 C：导演式包装（备选）
 
@@ -225,7 +243,9 @@ python3 scripts/font_compare.py --text "门槛几乎 降到零" \
 - `scripts/font_compare.py` — 字体对比样张生成（选字体前先出图目测）
 - `scripts/ref_board.py` — 参考片关键帧板（同媒介参考，先截图再看；对标 huashu-design 3.0 的 ref_board）
 - `scripts/wcag_check.py` — 文字/背景对比度核算（WCAG 2.1 AA；改配色前先核每一处配对，避免亮橙压白底这类不达标）
-- `scripts/render_talk.py` — **路线 H**：人在讲段渲染器（九宫格灵活构图 / 大特写走画中画 / 编号论点列表 / `--preview` 渲染前构图确认）
+- `scripts/render_kf.py` — **路线 H 人在讲主力**：KF 视觉语言两套版式（A 上下结构两拍 / B 角落画中画 + 白卡列表 + 底部色条），形状可变、cue 驱动入场、`--preview` 出静态确认图
+- `scripts/kf_square.py` — 人在讲静态版式出图（方/圆人像块 + 版面），用于方案确认阶段
+- `scripts/render_talk.py` — **路线 H**：人在讲段渲染器（九宫格灵活构图 / 大特写走画中画 / 关键字层叠加 / `--preview` 构图确认）；`--list` 编号论点版式已弃用
 - `scripts/render_anim.py` — **路线 H**：纯动效段渲染器（PIL 逐帧满屏关键帧 + ffmpeg 编码 + mux 音轨）
 - `scripts/gen_keyframes.py` — **路线 H / P1**：静态关键帧 PNG 生成（4 章风格 + 大标题/数据卡/树图）
 - `scripts/srt_to_ass.py` — 路线 B：SRT→tech 风格 ASS
