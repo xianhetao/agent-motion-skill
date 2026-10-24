@@ -187,6 +187,7 @@ python3 scripts/font_compare.py --text "门槛几乎 降到零" \
 - `scripts/verify_segments.py` — 路线 D：concat 前校验各段帧数/音轨，并给出修复命令
 - `scripts/font_compare.py` — 字体对比样张生成（选字体前先出图目测）
 - `scripts/ref_board.py` — 参考片关键帧板（同媒介参考，先截图再看；对标 huashu-design 3.0 的 ref_board）
+- `scripts/wcag_check.py` — 文字/背景对比度核算（WCAG 2.1 AA；改配色前先核每一处配对，避免亮橙压白底这类不达标）
 - `scripts/srt_to_ass.py` — 路线 B：SRT→tech 风格 ASS
 - `scripts/build_jianying.py` — 路线 A：剪映完整工程生成
 - `scripts/srt_to_shotlist.py` — 路线 A：SRT→shot_list.json
